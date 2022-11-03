@@ -1,28 +1,31 @@
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import Cabecalho from "./components/Cabecalho/Cabecalho";
+import { useState, useEffect } from "react";
 
-import logo from "./logo.svg";
-import "./App.css";
-
-function App() {
+function ListaProdutos() {
+  const [produtos, setProdutos] = useState([]);
+  useEffect(() => {
+    async function getProdutos() {
+      try {
+        const resposta = await fetch("https://fakestoreapi.com/products");
+        const dados = await resposta.json();
+        setProdutos(dados);
+        console.log(dados);
+      } catch (error) {
+        console.log("Deu ruim! " + error.message);
+      }
+    }
+    getProdutos();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {produtos.map(({ id, title, price, image }) => (
+        <div>
+          <h2>{title}</h2>
+          <p>${price}</p>
+          <img className="foto-produto" src={image} alt="" />
+        </div>
+      ))}
     </div>
   );
 }
 
-export default App;
+export default ListaProdutos;
